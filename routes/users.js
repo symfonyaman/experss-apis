@@ -62,11 +62,48 @@ router
       res.status(500).json({ error: 'Failed to create user' });
     }
   })
-  .patch('/', (req, res) => {
-    res.send('User updated');
+  .patch('/:userId', async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const { name, email } = req.body;
+  
+      // Find the user in the database
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Update the user data
+      user.name = name;
+      // user.email = email;
+  
+      // Save the updated user data
+      const updatedUser = await user.save();
+  
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update user data' });
+    }
   })
-  .delete('/', (req, res) => {
-    res.send('User deleted');
+  .delete('/:userId', async (req, res) => {
+    try {
+      const userId = req.params.userId;
+  
+      // Find the user in the database
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Delete the user
+      await user.deleteOne();
+  
+      res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {console.log(error)
+      res.status(500).json({ error: 'Failed to delete user' });
+    }
   });
 
 // Export the router instance
