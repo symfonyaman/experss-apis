@@ -3,14 +3,19 @@ const bodyParser = require('body-parser');
 const app = express()
 const port = 3000
 const mongoose = require('mongoose');
-const User = require('./models/user');
+const dotenv = require('dotenv');
+// Load environment variables from .env file
+dotenv.config();
+// Require the route modules
+const usersRouter = require('./routes/users');
+const mediasRouter = require('./routes/medias');
 
 // Add body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Connect to MongoDB using mongoose
-mongoose.connect('mongodb+srv://mgsamankr:hDAHpb2UvTfGZoG3@cluster0.uuzb1rl.mongodb.net/express5', {
+mongoose.connect(process.env.MONGO_CONNECTION, {
     useNewUrlParser: true,
     useUnifiedTopology: true
     })
@@ -21,11 +26,9 @@ mongoose.connect('mongodb+srv://mgsamankr:hDAHpb2UvTfGZoG3@cluster0.uuzb1rl.mong
         console.error('Error connecting to MongoDB:', error);
     });
 
-// Require the route modules
-const usersRouter = require('./routes/users');
-
 // Use the route modules in your application
 app.use('/api/users', usersRouter);
+app.use('/api/media', mediasRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
