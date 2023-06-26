@@ -56,9 +56,6 @@ router
         } catch (error) {
           res.status(500).json({ error: 'Failed to save media to the database' });
         }
-
-
-        
     })
     .put('/', async (req, res) => {})
     .delete('/', async (req, res) => {})
